@@ -9,20 +9,28 @@ type Action<E> = (e: E) => E
 interface Group<E> {
     actions: Action<E>[]
     eq: (e1: E, e2: E) => boolean
+    compare: (e1: E, e2: E) => number
     set: E[]
 }
 
 const mean = (arr: Iteruyo<number>) =>
     arr.reduce((a, b) => a + b, 0) / arr.length
 
+const defaultCompare = (e1: any, e2: any) =>
+      e1 > e2 ? 1
+    : e1 < e2 ? -1
+    : 0
+
 class Group<E> {
     constructor({
         actions = [],
         eq = (e1, e2) => e1 == e2,
+        compare = defaultCompare,
         set = [],
     }: Partial<Group<E>>) {
         this.actions = actions
         this.eq = eq
+        this.compare = compare
         this.set = set
     }
 
@@ -37,6 +45,16 @@ class Group<E> {
             )
             .bypass(x => console.log(x.toArray()))
             .pipe(mean)
+    }
+
+    calc() {
+        const { actions, compare, set } = this
+
+        return Array.from(new Set(set.map(e =>
+            actions
+                .map(action => action(e))
+                .sort(compare)[0]
+        )))
     }
 }
 
@@ -62,3 +80,4 @@ const str4 = new Group<string>({
 })
 
 console.log(str4.burnside())
+console.log(str4.calc())
