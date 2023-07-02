@@ -40,7 +40,7 @@ const t =
         ].map(x => x.join(""))
     })
 
-import { Group } from "./mod.ts"
+import { Group } from "../mod.ts"
 
 const set = [...new Set(t)]
 console.log(set)
