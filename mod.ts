@@ -24,7 +24,14 @@ export class Group<E> {
         compare = defaultCompare,
         set = [],
     }: Partial<Group<E>>) {
-        this.actions = actions
+        this.actions = actions.map(action =>
+            e => {
+                const result = action(e)
+                if (!set.includes(result))
+                    throw new Error(`\nAction is not closed:\n\t"${e}" -> "${result}"`)
+                return result
+            }
+        )
         this.eq = eq
         this.compare = compare
         this.set = set
