@@ -1,6 +1,6 @@
 import Iteruyo, { $ } from "https://deno.land/x/iteruyo@v0.3.0/mod.ts"
 
-type Action<E> = (e: E) => E
+export type Action<E> = (e: E) => E
 
 export interface Group<E> {
     actions: Action<E>[]
@@ -39,7 +39,6 @@ export class Group<E> {
 
     burnside() {
         const { actions, eq, set } = this
-        console.log(set)
 
         return $(actions)
             .map(action =>
