@@ -27,4 +27,23 @@ const od = new Group({
 
 console.log(od.burnside())
 console.log(od.calc().length)
-console.log(od.calc().map(x => x.slice(0, 3)+"-"+x.slice(3)).filter(str => !/\(x-x\)|x.-.x|\(x\)|x[^-]x/.test(str)))
+
+const codeNormalize =
+    (code: string): string => {
+        const start = code.indexOf("(")
+		const result = code.slice(start) + code.slice(0, start)
+		if (/^[^(]*\([^()]*\)[^()]*\)/.test(result)) return codeNormalize(code.slice(1) + code.slice(0, 1))
+        return result
+    }
+
+console.log(
+    od.calc()
+    .map(x => x.slice(0, 3)+"-"+x.slice(3)+"-")
+    .map(codeNormalize)
+    .filter(str =>
+        !/\(x-x\)|\(\(-\)\)|x.-.x|\(x\)|x[^-]x/
+        .test(str)
+    )
+    .filter(str => !/\(-xxx-\)/.test(str.replace("()", "xx")))
+    //.length
+)
